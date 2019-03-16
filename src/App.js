@@ -1,10 +1,13 @@
 import React, {useState} from 'react';
+import { AppBar, CssBaseline, Grid, Typography } from '@material-ui/core';
 import './App.css';
 
 function ProductList(props) {
   const {products} = props;
   const items = products.map(product =>
-    <li key={product.name}>{product.name} {product.price}</li>
+    <li key={product.name}>
+      <Typography>{product.name} {product.price}</Typography>
+    </li>
   );
 
   return <ul className="product-list">{items}</ul>
@@ -15,9 +18,9 @@ function ProductGroup(props) {
   const {tag, products} = group;
   const filtered = products.filter(filterFn);
   return filtered.length === 0 ? null : (
-    <div>{tag}
+    <Grid item><Typography varian="headline">{tag}</Typography>
       <ProductList products={filtered} />
-    </div>
+    </Grid>
   );
 }
 
@@ -32,13 +35,19 @@ function ControlBar(props) {
   const toggleInStockOnly = () => setInStockOnly(!inStockOnly);
   const handleFilterChange = (evt) => setFilterText(evt.target.value);
   return (
-    <div>
-      <label>
-        <input type="checkbox" checked={inStockOnly} onChange={toggleInStockOnly} /> 
-        In stock only
-      </label>;
-      <input type="text" placeholder="Filter..." value={filterText} onChange={handleFilterChange} />
-    </div>
+    <AppBar position='static'>
+      <Grid container direction='column'>
+        <Grid item>
+          <input type="text" placeholder="Filter..." value={filterText} onChange={handleFilterChange} />
+        </Grid>
+        <Grid item>
+          <label>
+            <input type="checkbox" checked={inStockOnly} onChange={toggleInStockOnly} /> 
+              In stock only
+          </label>
+        </Grid>
+      </Grid>
+    </AppBar>
   )
 }
 
@@ -50,11 +59,12 @@ function App(props) {
   const filterFn = product => 
     (!inStockOnly || product.stocked) && product.name.search(re) !== -1;
   return (
-    <React.Fragment>
+    <Grid container direction="column">
+      <CssBaseline />
       <ControlBar inStockOnly={inStockOnly} setInStockOnly={setInStockOnly}
         filterText={filterText} setFilterText={setFilterText} />
       <ProductGroupList groups={groups} filterFn={filterFn} />
-    </React.Fragment>
+    </Grid>
   );
 }
 
