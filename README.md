@@ -1,6 +1,8 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-It's a re-enactment of the [Thinking in React](https://reactjs.org/docs/thinking-in-react.html) app code, using stateless functional components and React Hooks.  Also, the application logic has been changed slightly: products can be in multiple categories, and filtering is case-insensitive.
+It's a re-enactment of the [Thinking in React](https://reactjs.org/docs/thinking-in-react.html) app code.
+
+First it was changed to use stateless functional components and React Hooks. Then a bit of Material UI was added. Finally, the product list was changed to load from a static JSON file. The application logic was changed slightly to use case-insensitive filtering and allow products to be in more than one category.
 
 
 ## Available Scripts

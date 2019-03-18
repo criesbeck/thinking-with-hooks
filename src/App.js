@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {Suspense, useEffect, useState} from 'react';
 import { AppBar, CssBaseline, Grid, Typography } from '@material-ui/core';
 import './App.css';
 
@@ -51,19 +51,63 @@ function ControlBar(props) {
   )
 }
 
+function groupByTags(products) {
+  if (products === null) {
+    return null;
+  }
+  const tags = Array.from(new Set(products.flatMap(product => product.tags))).sort();
+  return tags.map(tag => ({
+    tag,
+    products: products.filter(product => product.tags.includes(tag))
+  }));
+}
+
+// custom hook
+// modeled on https://www.robinwieruch.de/react-hooks-fetch-data/
+function useProductFetch(url) {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchGroups = async () => {
+      setError(null);
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          return setError(response);
+        }
+        const json = await response.json(url);
+        setData(groupByTags(json));
+      }
+      catch (exc) {
+        setError(exc);
+      }
+    };
+    fetchGroups();
+  }, [url])
+
+  return [data, error];
+}
+
 function App(props) {
-  const {groups} = props;
+  const {url} = props;
   const [inStockOnly, setInStockOnly] = useState(false);
   const [filterText, setFilterText] = useState('');
   const re = new RegExp(filterText, "i");
   const filterFn = product => 
     (!inStockOnly || product.stocked) && product.name.search(re) !== -1;
+  const [groups, error] = useProductFetch(url);
+
+  if (error) return <span>ERROR: {error.message}</span>;
+  if (!groups) return null
   return (
     <Grid container direction="column">
       <CssBaseline />
       <ControlBar inStockOnly={inStockOnly} setInStockOnly={setInStockOnly}
         filterText={filterText} setFilterText={setFilterText} />
-      <ProductGroupList groups={groups} filterFn={filterFn} />
+      <Suspense fallback={<span>Loading...</span>}>
+        <ProductGroupList groups={groups} filterFn={filterFn} />
+      </Suspense>
     </Grid>
   );
 }
