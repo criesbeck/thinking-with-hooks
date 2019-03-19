@@ -101,14 +101,18 @@ function App(props) {
   if (error) return <span>ERROR: {error.message}</span>;
   if (!groups) return null
   return (
-    <Grid container direction="column">
-      <CssBaseline />
-      <ControlBar inStockOnly={inStockOnly} setInStockOnly={setInStockOnly}
-        filterText={filterText} setFilterText={setFilterText} />
-      <Suspense fallback={<span>Loading...</span>}>
-        <ProductGroupList groups={groups} filterFn={filterFn} />
-      </Suspense>
-    </Grid>
+    <div class="content">
+      <Grid container direction="column">
+        <CssBaseline />
+        <ControlBar inStockOnly={inStockOnly} setInStockOnly={setInStockOnly}
+          filterText={filterText} setFilterText={setFilterText} />
+        <div class="content">
+          <Suspense fallback={<span>Loading...</span>}>
+            <ProductGroupList groups={groups} filterFn={filterFn} />
+          </Suspense>
+        </div>
+      </Grid>
+    </div>
   );
 }
 

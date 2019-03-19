@@ -24,7 +24,5 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "devDependencies": {
-    "react-testing-library": "^6.0.1"
-  }
+  "devDependencies": {}
 }

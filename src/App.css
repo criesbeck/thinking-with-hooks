@@ -1,3 +1,7 @@
 ul.product-list {
   list-style: none;
 }
+
+.content {
+  margin: 1em;
+}
