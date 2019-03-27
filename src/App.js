@@ -1,40 +1,15 @@
 import React, {Suspense, useEffect, useState} from 'react';
-import PropTypes from 'prop-types';
-import { AppBar, CssBaseline, Grid, Typography } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import { Container, List } from 'semantic-ui-react';
 import './App.css';
-
-// https://github.com/mui-org/material-ui/tree/master/docs/src/pages/getting-started/page-layout-examples/sign-in
-const styles = theme => ({
-  main: {
-    width: 'auto',
-    display: 'block', // Fix IE 11 issue.
-    marginLeft: theme.spacing.unit * 3,
-    marginRight: theme.spacing.unit * 3,
-    [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
-      width: 400,
-      marginLeft: 'auto',
-      marginRight: 'auto',
-    },
-  },
-  paper: {
-    marginTop: theme.spacing.unit * 8,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
-  },
-});
 
 function ProductList(props) {
   const {products} = props;
   const items = products.map(product =>
-    <li key={product.name}>
-      <Typography>{product.name} {product.price}</Typography>
-    </li>
+    <List.Item key={product.name}>
+      {product.name} {product.price}
+    </List.Item>
   );
-
-  return <ul className="product-list">{items}</ul>
+  return <List.List>{items}</List.List>
 }
 
 function ProductGroup(props) {
@@ -42,9 +17,12 @@ function ProductGroup(props) {
   const {tag, products} = group;
   const filtered = products.filter(filterFn);
   return filtered.length === 0 ? null : (
-    <Grid item><Typography varian="headline">{tag}</Typography>
-      <ProductList products={filtered} />
-    </Grid>
+    <List>
+      <List.Header>{tag}</List.Header>
+      <List.Content>
+        <ProductList products={filtered} />
+      </List.Content>
+    </List>
   );
 }
 
@@ -53,7 +31,7 @@ function ProductGroupList(props) {
   const items = groups.map(group => 
     <ProductGroup group={group} key={group.tag} filterFn={filterFn} />);
   return (
-    <Grid container direction="column">{items}</Grid>
+    <List>{items}</List>
   );
 }
 
@@ -62,19 +40,17 @@ function ControlBar(props) {
   const toggleInStockOnly = () => setInStockOnly(!inStockOnly);
   const handleFilterChange = (evt) => setFilterText(evt.target.value);
   return (
-    <AppBar position='static'>
-      <Grid container direction="column" >
-        <Grid item>
-          <input type="text" placeholder="Filter..." value={filterText} onChange={handleFilterChange} />
-        </Grid>
-        <Grid item>
-          <label>
-            <input type="checkbox" checked={inStockOnly} onChange={toggleInStockOnly} /> 
-              In stock only
-          </label>
-        </Grid>
-      </Grid>
-    </AppBar>
+    <div className="ui fixed inverted menu">
+      <div class="item">
+        <input type="text" placeholder="Filter..." value={filterText} onChange={handleFilterChange} />
+      </div>
+      <div class="ui transparent inverted input item">
+        <label>
+          <input type="checkbox" checked={inStockOnly} onChange={toggleInStockOnly} /> 
+            In stock only
+        </label>
+      </div>
+    </div>
   )
 }
 
@@ -117,7 +93,7 @@ function useProductFetch(url) {
 }
 
 function App(props) {
-  const {classes, url} = props;
+  const {url} = props;
   const [inStockOnly, setInStockOnly] = useState(false);
   const [filterText, setFilterText] = useState('');
   const re = new RegExp(filterText, "i");
@@ -128,19 +104,16 @@ function App(props) {
   if (error) return <span>ERROR: {error.message}</span>;
   if (!groups) return null
   return (
-    <main className={classes.main}>
-      <CssBaseline />
-        <ControlBar inStockOnly={inStockOnly} setInStockOnly={setInStockOnly}
-          filterText={filterText} setFilterText={setFilterText} />
+    <React.Fragment>
+      <ControlBar inStockOnly={inStockOnly} setInStockOnly={setInStockOnly}
+        filterText={filterText} setFilterText={setFilterText} />
+      <div className="ui main container">
         <Suspense fallback={<span>Loading...</span>}>
           <ProductGroupList groups={groups} filterFn={filterFn} />
         </Suspense>
-    </main>
+      </div>
+    </React.Fragment>
   );
 }
 
-App.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-export default withStyles(styles)(App);
+export default App;
