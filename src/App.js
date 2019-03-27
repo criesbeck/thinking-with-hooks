@@ -1,5 +1,5 @@
 import React, {Suspense, useEffect, useState} from 'react';
-import { Container, List } from 'semantic-ui-react';
+import { List } from 'semantic-ui-react';
 import './App.css';
 
 function ProductList(props) {
