@@ -1,5 +1,5 @@
 import React, {Suspense, useEffect, useState} from 'react';
-import { List } from 'semantic-ui-react';
+import { Container, List } from 'semantic-ui-react';
 import './App.css';
 
 function ProductList(props) {
@@ -107,11 +107,11 @@ function App(props) {
     <React.Fragment>
       <ControlBar inStockOnly={inStockOnly} setInStockOnly={setInStockOnly}
         filterText={filterText} setFilterText={setFilterText} />
-      <div className="ui main container">
+      <Container className="ui main">
         <Suspense fallback={<span>Loading...</span>}>
           <ProductGroupList groups={groups} filterFn={filterFn} />
         </Suspense>
-      </div>
+      </Container>
     </React.Fragment>
   );
 }
