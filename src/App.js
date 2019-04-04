@@ -1,5 +1,5 @@
 import React, {Suspense, useEffect, useState} from 'react';
-import { Container, List } from 'semantic-ui-react';
+import { Checkbox, Container, Input, List, Menu } from 'semantic-ui-react';
 import './App.css';
 
 function ProductList(props) {
@@ -40,17 +40,17 @@ function ControlBar(props) {
   const toggleInStockOnly = () => setInStockOnly(!inStockOnly);
   const handleFilterChange = (evt) => setFilterText(evt.target.value);
   return (
-    <div className="ui fixed inverted menu">
-      <div class="item">
-        <input type="text" placeholder="Filter..." value={filterText} onChange={handleFilterChange} />
-      </div>
-      <div class="ui transparent inverted input item">
+    <Menu inverted>
+      <Menu.Item>
+        <Input placeholder="Filter..." value={filterText} onChange={handleFilterChange} />
+      </Menu.Item>
+      <div class="ui inverted input item">
         <label>
-          <input type="checkbox" checked={inStockOnly} onChange={toggleInStockOnly} /> 
-            In stock only
+          <Checkbox checked={inStockOnly} onChange={toggleInStockOnly} /> 
+            &nbsp;&nbsp;In stock only
         </label>
       </div>
-    </div>
+    </Menu>
   )
 }
 
