@@ -38,7 +38,7 @@ function ProductGroupList(props) {
 function ControlBar(props) {
   const { filter } = props;
   const toggleInStockOnly = () => filter.setInStockOnly(!filter.inStockOnly);
-  const handleFilterChange = (evt) => filter.setFilterText(evt.target.value);
+  const handleFilterChange = (evt) => filter.setText(evt.target.value);
   return (
     <Segment inverted>
       <Form inverted>
@@ -93,16 +93,16 @@ function useProductFetch(url) {
 
 const useFilter = () => {
   const [inStockOnly, setInStockOnly] = useState(false);
-  const [filterText, setFilterText] = useState('');
-  const re = new RegExp(filterText, "i");
+  const [text, setText] = useState('');
+  const re = new RegExp(text, "i");
   return {
     test(product) {
       return (!inStockOnly || product.stocked) && product.name.search(re) !== -1;
     },
-    text: filterText,
+    text,
     inStockOnly: inStockOnly,
     setInStockOnly,
-    setFilterText
+    setText
   };
 }
 
