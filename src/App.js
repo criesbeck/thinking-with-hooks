@@ -100,7 +100,7 @@ const useFilter = () => {
       return (!inStockOnly || product.stocked) && product.name.search(re) !== -1;
     },
     text,
-    inStockOnly: inStockOnly,
+    inStockOnly,
     setInStockOnly,
     setText
   };
