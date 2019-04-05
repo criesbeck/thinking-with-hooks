@@ -1,5 +1,5 @@
 import React, {Suspense, useEffect, useState} from 'react';
-import { Checkbox, Container, Input, List, Menu } from 'semantic-ui-react';
+import { Container, Form, List, Segment } from 'semantic-ui-react';
 import './App.css';
 
 function ProductList(props) {
@@ -13,9 +13,9 @@ function ProductList(props) {
 }
 
 function ProductGroup(props) {
-  const {group, filterFn} = props;
+  const { group, filter } = props;
   const {tag, products} = group;
-  const filtered = products.filter(filterFn);
+  const filtered = products.filter(filter.test);
   return filtered.length === 0 ? null : (
     <List>
       <List.Header>{tag}</List.Header>
@@ -27,30 +27,29 @@ function ProductGroup(props) {
 }
 
 function ProductGroupList(props) {
-  const {groups, filterFn} = props;
+  const { groups, filter } = props;
   const items = groups.map(group => 
-    <ProductGroup group={group} key={group.tag} filterFn={filterFn} />);
+    <ProductGroup group={group} key={group.tag} filter={filter} />);
   return (
     <List>{items}</List>
   );
 }
 
 function ControlBar(props) {
-  const {inStockOnly, setInStockOnly, filterText, setFilterText} = props;
-  const toggleInStockOnly = () => setInStockOnly(!inStockOnly);
-  const handleFilterChange = (evt) => setFilterText(evt.target.value);
+  const { filter } = props;
+  const toggleInStockOnly = () => filter.setInStockOnly(!filter.inStockOnly);
+  const handleFilterChange = (evt) => filter.setFilterText(evt.target.value);
   return (
-    <Menu inverted>
-      <Menu.Item>
-        <Input placeholder="Filter..." value={filterText} onChange={handleFilterChange} />
-      </Menu.Item>
-      <div class="ui inverted input item">
-        <label>
-          <Checkbox checked={inStockOnly} onChange={toggleInStockOnly} /> 
-            &nbsp;&nbsp;In stock only
-        </label>
-      </div>
-    </Menu>
+    <Segment inverted>
+      <Form inverted>
+        <Form.Group inline>
+          <Form.Input placeholder="Filter..." value={filter.text}
+            onChange={handleFilterChange} />
+          <Form.Checkbox label="In stock only" checked={filter.inStockOnly}
+            onChange={toggleInStockOnly} />
+        </Form.Group>
+      </Form>
+    </Segment>
   )
 }
 
@@ -92,24 +91,33 @@ function useProductFetch(url) {
   return [data, error];
 }
 
-function App(props) {
-  const {url} = props;
+const useFilter = () => {
   const [inStockOnly, setInStockOnly] = useState(false);
   const [filterText, setFilterText] = useState('');
   const re = new RegExp(filterText, "i");
-  const filterFn = product => 
-    (!inStockOnly || product.stocked) && product.name.search(re) !== -1;
+  return {
+    test(product) {
+      return (!inStockOnly || product.stocked) && product.name.search(re) !== -1;
+    },
+    text: filterText,
+    inStockOnly: inStockOnly,
+    setInStockOnly,
+    setFilterText
+  };
+}
+function App(props) {
+  const {url} = props;
   const [groups, error] = useProductFetch(url);
+  const filter = useFilter();
 
   if (error) return <span>ERROR: {error.message}</span>;
   if (!groups) return null
   return (
     <React.Fragment>
-      <ControlBar inStockOnly={inStockOnly} setInStockOnly={setInStockOnly}
-        filterText={filterText} setFilterText={setFilterText} />
-      <Container className="ui main">
+      <ControlBar filter={filter}/>
+      <Container>
         <Suspense fallback={<span>Loading...</span>}>
-          <ProductGroupList groups={groups} filterFn={filterFn} />
+          <ProductGroupList groups={groups} filter={filter} />
         </Suspense>
       </Container>
     </React.Fragment>
