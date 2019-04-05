@@ -105,6 +105,7 @@ const useFilter = () => {
     setFilterText
   };
 }
+
 function App(props) {
   const {url} = props;
   const [groups, error] = useProductFetch(url);
