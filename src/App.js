@@ -89,7 +89,7 @@ function useProductFetch(url) {
   }, [url])
 
   return [data, error];
-}
+};
 
 const useFilter = () => {
   const [inStockOnly, setInStockOnly] = useState(false);
@@ -104,9 +104,9 @@ const useFilter = () => {
     setInStockOnly,
     setText
   };
-}
+};
 
-function App(props) {
+const App = (props) => {
   const {url} = props;
   const [groups, error] = useProductFetch(url);
   const filter = useFilter();
@@ -123,6 +123,6 @@ function App(props) {
       </Container>
     </React.Fragment>
   );
-}
+};
 
 export default App;
