@@ -1,9 +1,7 @@
 language: node_js
 node_js:
 - node
-deploy:
-  provider: firebase
-  skip_cleanup: true
-  token:
-    secure: "RhcnRprVAs+nT3wA1kfMxbNtRo/NyYjO9AnXZVw4d6IULN4t+iAYCx+p4zV7895KRuHdO5usAe1/NQkKsVGytZm/T29PGOxh27YzoHAzPIbURtpQLsdrnbUR5EMf0UeRFH9L9oKyn9CEF+dheHPwesVen/2WlJBqIjBkeebobNZ9ADn9RDmoTnTlCXeJSWzbkwDNUP/xgr2FLAld9YHZo4PDRlJkMxn3q2N0qhh9QaMEswZQymKcBAQvuxqZ5QmxVK4h6fl1d+PqLAZjy3Z7aNAuQJHpRIz9p1GrzEJU/iqFod6c68Vog9ec1DYgx5l8aDJnLJlJYvyh4Up/fMSCbtky7GiiuUuO1lzXoJy/pG2Q7vhvBGicNY0jBbEeX8GZtQJHxGk9c9kY3U1ErIzVzpkAm90BtCpf0/N7CQFxwHSjyg87o/V9YzNr4Clp92JtvPeYqEmFi64CA3u6Aesajqyx6NXW0aNMHkeM2OE8DlUXYa6kHDoHJyo1OMdDPmHYAtAUIV4/PcZe7alfGMUja4VlhznuOiMITCsNzYqWPOUQHN+rSdgT8IxfhcEfFVhBH12a3fyLAnxsrwlPu9liQ1rZqtMaeqMRthpLZaIGWgoQnm/sjiVnG5JenkAco6fDUShq8hb6fLeiPBiuRndqhNx/psV5AWaFSd8FmIYSfH4="
-    
+before_script:
+  - npm install -g firebase-tools
+after_success:
+ - firebase deploy --token $FIREBASE_TOKEN --non-interactive
