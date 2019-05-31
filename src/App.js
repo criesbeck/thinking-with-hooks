@@ -1,12 +1,17 @@
 import React, {Suspense, useEffect, useState} from 'react';
-import { Container, Form, List, Segment } from 'semantic-ui-react';
+import { Container, Form, Grid, List, Segment } from 'semantic-ui-react';
 import './App.css';
 
 function ProductList(props) {
   const {products} = props;
   const items = products.map(product =>
     <List.Item key={product.name}>
-      {product.name} {product.price}
+      <Grid columns={3}>
+        <Grid.Row>
+          <Grid.Column>{product.name}</Grid.Column>
+          <Grid.Column>{product.price}</Grid.Column>
+        </Grid.Row>
+      </Grid>
     </List.Item>
   );
   return <List.List>{items}</List.List>
